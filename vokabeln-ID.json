@@ -1,0 +1,177 @@
+[
+  {
+    "id": 1,
+    "english": "Relational Mindfulness",
+    "german": "Beziehungsbasierte / Relationale Achtsamkeit",
+    "ex_en": "Relational mindfulness extends awareness into the interpersonal space.",
+    "ex_de": "Relationale Achtsamkeit erweitert das Gewahrsein in den zwischenmenschlichen Raum."
+  },
+  {
+    "id": 2,
+    "english": "Relational Dhamma",
+    "german": "Die Entfaltung der Lehre im zwischenmenschlichen Kontakt",
+    "ex_en": "Practicing relational Dhamma allows us to see truth in real-time interaction.",
+    "ex_de": "Die Praxis des relationalen Dhamma lässt uns die Wahrheit in Echtzeit-Interaktion sehen."
+  },
+  {
+    "id": 3,
+    "english": "Pause",
+    "german": "Innehalten (1. Guideline)",
+    "ex_en": "When reactivity arises, step back and Pause.",
+    "ex_de": "Wenn Reaktivität entsteht, tritt zurück und halte inne."
+  },
+  {
+    "id": 4,
+    "english": "Relax",
+    "german": "Entspannen (2. Guideline)",
+    "ex_en": "Relax the body and mind while maintaining vigilance.",
+    "ex_de": "Entspanne Körper und Geist, während du die Wachheit aufrechterhältst."
+  },
+  {
+    "id": 5,
+    "english": "Open",
+    "german": "Öffnen (3. Guideline)",
+    "ex_en": "Open to internal sensations and external surroundings.",
+    "ex_de": "Öffne dich für innere Empfindungen und die externe Umgebung."
+  },
+  {
+    "id": 6,
+    "english": "Attune",
+    "german": "Einstimmen / Feineinstimmung",
+    "ex_en": "Attune to the subtle shifts in tone and emotion during dialogue.",
+    "ex_de": "Stimme dich auf die subtilen Veränderungen von Tonfall und Emotion im Dialog ein."
+  },
+  {
+    "id": 7,
+    "english": "Trust Emergence",
+    "german": "Dem Entstehen vertrauen (4. Guideline)",
+    "ex_en": "Trust emergence instead of planning what to say next.",
+    "ex_de": "Vertraue dem Entstehen, anstatt zu planen, was du als Nächstes sagen willst."
+  },
+  {
+    "id": 8,
+    "english": "Listen Fully",
+    "german": "Tief / Ganzheitlich zuhören (5. Guideline)",
+    "ex_en": "Listen fully with your entire body, not just your intellect.",
+    "ex_de": "Höre mit deinem ganzen Körper zu, nicht nur mit dem Verstand."
+  },
+  {
+    "id": 9,
+    "english": "Speak Truth",
+    "german": "Die (subjektive) Wahrheit sprechen (6. Guideline)",
+    "ex_en": "Speak truth directly from your present-moment experience.",
+    "ex_de": "Sprich die Wahrheit direkt aus deiner Erfahrung im gegenwärtigen Moment."
+  },
+  {
+    "id": 10,
+    "english": "Contemplative Dialogue",
+    "german": "Kontemplativer / Meditativer Dialog",
+    "ex_en": "Contemplative dialogue bridges formal meditation and everyday conversation.",
+    "ex_de": "Kontemplativer Dialog schlägt eine Brücke zwischen formeller Meditation und Alltagsgesprächen."
+  },
+  {
+    "id": 11,
+    "english": "Interpersonal Field",
+    "german": "Zwischenmenschliches Feld",
+    "ex_en": "A tension felt in the room belongs to the interpersonal field.",
+    "ex_de": "Eine im Raum spürbare Spannung gehört zum zwischenmenschlichen Feld."
+  },
+  {
+    "id": 12,
+    "english": "Co-presence",
+    "german": "Ko-Präsenz (Gemeinsame Anwesenheit)",
+    "ex_en": "Holding co-presence cultivates safety in the group.",
+    "ex_de": "Das Halten der Ko-Präsenz kultiviert Sicherheit in der Gruppe."
+  },
+  {
+    "id": 13,
+    "english": "Dyad",
+    "german": "Zweiergruppe / Meditationspartner-Paar",
+    "ex_en": "In the dyad practice, partners take turns speaking and listening.",
+    "ex_de": "In der Zweiergruppen-Praxis wechseln sich die Partner beim Sprechen und Zuhören ab."
+  },
+  {
+    "id": 14,
+    "english": "Reactivity",
+    "german": "Reaktivität (Automatische Reizmuster)",
+    "ex_en": "Noticing reactivity is the first step toward freedom from habit.",
+    "ex_de": "Das Bemerken von Reaktivität ist der erste Schritt zur Freiheit von Gewohnheit."
+  },
+  {
+    "id": 15,
+    "english": "Habitual Patterns",
+    "german": "Gewohnheitsmäßige Verhaltens- oder Denkmuster",
+    "ex_en": "Meditation uncovers deep-seated habitual patterns.",
+    "ex_de": "Meditation deckt tief sitzende Gewohnheitsmuster auf."
+  },
+  {
+    "id": 16,
+    "english": "Selfing",
+    "german": "Erzeugen/Konstruieren eines 'Ich' (Ich-Machen)",
+    "ex_en": "Selfing often intensifies when we feel judged by others.",
+    "ex_de": "Das Ich-Machen verstärkt sich oft, wenn wir uns von anderen beurteilt fühlen."
+  },
+  {
+    "id": 17,
+    "english": "Equanimity",
+    "german": "Gleichmut (Upekkha)",
+    "ex_en": "Equanimity allows us to remain steady amidst life's changes.",
+    "ex_de": "Gleichmut ermöglicht es uns, inmitten der Veränderungen des Lebens stabil zu bleiben."
+  },
+  {
+    "id": 18,
+    "english": "Bare Attention",
+    "german": "Reine / Rezeptive Aufmerksamkeit",
+    "ex_en": "Bare attention observes phenomena without adding concepts or judgments.",
+    "ex_de": "Reine Aufmerksamkeit beobachtet Phänomene, ohne Konzepte oder Urteile hinzuzufügen."
+  },
+  {
+    "id": 19,
+    "english": "Mental Formations",
+    "german": "Geistige Formationen (Sankhara)",
+    "ex_en": "Thoughts and emotions are conditioned mental formations.",
+    "ex_de": "Gedanken und Emotionen sind konditionierte geistige Formationen."
+  },
+  {
+    "id": 20,
+    "english": "Hindrances",
+    "german": "Die fünf Hindernisse (Nivarana)",
+    "ex_en": "Doubt and restlessness are common hindrances in meditation.",
+    "ex_de": "Zweifel und Unruhe sind häufige Hindernisse in der Meditation."
+  },
+  {
+    "id": 21,
+    "english": "Defilements",
+    "german": "Geistige Befleckungen / Trübungen (Kilesas)",
+    "ex_en": "Greed, hatred, and delusion are known as mental defilements.",
+    "ex_de": "Gier, Hass und Verblendung sind als geistige Trübungen bekannt."
+  },
+  {
+    "id": 22,
+    "english": "Somatic Awareness",
+    "german": "Körperlich-somatisches Gewahrsein",
+    "ex_en": "Somatic awareness anchors us when emotions run high.",
+    "ex_de": "Somatisches Gewahrsein verankert uns, wenn Emotionen hochkochen."
+  },
+  {
+    "id": 23,
+    "english": "Noble Silence",
+    "german": "Edles Schweigen",
+    "ex_en": "Noble silence helps quiet the verbal chatter of the mind.",
+    "ex_de": "Edles Schweigen hilft, das innere sprachliche Plappern zu beruhigen."
+  },
+  {
+    "id": 24,
+    "english": "Residential Retreat",
+    "german": "Mehrtägiges Retreat vor Ort",
+    "ex_en": "A residential retreat offers an immersive environment for practice.",
+    "ex_de": "Ein mehrtägiges Retreat bietet eine vertiefende Umgebung für die Praxis."
+  },
+  {
+    "id": 25,
+    "english": "Contemplative Prompt",
+    "german": "Kontemplativer Impuls / Leitfrage",
+    "ex_en": "The teacher introduced a contemplative prompt on impermanence.",
+    "ex_de": "Der Lehrende führte einen kontemplativen Impuls zur Vergänglichkeit ein."
+  }
+]

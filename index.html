@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Insight Dialogue Vokabeltrainer Pro</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 750px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      background: #f4f6f8;
+      color: #333;
+      text-align: center;
+    }
+    h1 { margin-bottom: 0.5rem; }
+    .card-container {
+      perspective: 1000px;
+      margin: 2rem 0;
+      height: 220px;
+      cursor: pointer;
+    }
+    .card {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.5s ease;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      background: white;
+    }
+    .card.flipped { transform: rotateY(180deg); }
+    .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 1.5rem;
+      box-sizing: border-box;
+      border-radius: 12px;
+      border: 2px solid #e2e8f0;
+    }
+    .card-back {
+      transform: rotateY(180deg);
+      background-color: #f8fafc;
+    }
+    .lang-label {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #64748b;
+      margin-bottom: 0.5rem;
+    }
+    .word-text {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #1e293b;
+    }
+    .hint {
+      font-size: 0.8rem;
+      color: #94a3b8;
+      margin-top: 1rem;
+    }
+    .controls {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+    button {
+      padding: 0.75rem 1.2rem;
+      font-size: 0.95rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s, opacity 0.2s;
+    }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-wrong { background: #ef4444; color: white; }
+    .btn-wrong:hover:not(:disabled) { background: #dc2626; }
+    .btn-correct { background: #22c55e; color: white; }
+    .btn-correct:hover:not(:disabled) { background: #16a34a; }
+    .btn-sentence { background: #3b82f6; color: white; margin-top: 0.5rem; }
+    .btn-sentence:hover:not(:disabled) { background: #2563eb; }
+    .btn-ai { background: #06b6d4; color: white; margin-top: 0.5rem; }
+    .btn-ai:hover:not(:disabled) { background: #0891b2; }
+    .btn-import { background: #8b5cf6; color: white; margin-top: 0.5rem; }
+    .btn-import:hover:not(:disabled) { background: #7c3aed; }
+    .btn-stats { background: #0f766e; color: white; margin-top: 0.5rem; }
+    .btn-stats:hover:not(:disabled) { background: #0d9488; }
+    .btn-add { background: #d97706; color: white; margin-top: 0.5rem; }
+    .btn-add:hover:not(:disabled) { background: #b45309; }
+    .btn-backup { background: #475569; color: white; margin-top: 0.5rem; }
+    .btn-backup:hover:not(:disabled) { background: #334155; }
+    .btn-settings { background: #64748b; color: white; margin-top: 0.5rem; }
+    .btn-settings:hover:not(:disabled) { background: #475569; }
+    .btn-reset { background: #ef4444; color: white; font-size: 0.8rem; padding: 0.4rem 0.8rem; margin-top: 0.5rem; }
+    .btn-reset:hover:not(:disabled) { background: #dc2626; }
+    .btn-copy { background: #0284c7; color: white; font-size: 0.75rem; padding: 0.3rem 0.6rem; }
+    .btn-copy:hover:not(:disabled) { background: #0369a1; }
+    .btn-edit { background: #6366f1; color: white; font-size: 0.75rem; padding: 0.3rem 0.6rem; }
+    .btn-edit:hover:not(:disabled) { background: #4f46e5; }
+    .btn-delete { background: #dc2626; color: white; font-size: 0.75rem; padding: 0.3rem 0.6rem; }
+    .btn-delete:hover:not(:disabled) { background: #b91c1c; }
+    .btn-speak { background: #e2e8f0; color: #334155; margin-top: 0.5rem; font-size: 0.9rem; padding: 0.4rem 0.8rem; }
+    
+    #sentenceBox, #importBox, #statsView, #addVocabBox, #backupBox, #settingsBox {
+      background: white;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-top: 1.5rem;
+      text-align: left;
+      display: none;
+    }
+
+    .form-group {
+      margin-bottom: 0.8rem;
+      text-align: left;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #475569;
+      margin-bottom: 0.2rem;
+    }
+    .form-row {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .form-row .form-group { flex: 1; }
+
+    .prompt-preview {
+      background: #e2e8f0;
+      padding: 0.6rem;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 0.85rem;
+      color: #1e293b;
+      margin: 0.5rem 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .progress-bar-bg {
+      background: #e2e8f0;
+      border-radius: 8px;
+      height: 12px;
+      width: 100%;
+      overflow: hidden;
+      margin: 0.5rem 0 1rem 0;
+    }
+    .progress-bar-fill {
+      background: #3b82f6;
+      height: 100%;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      font-size: 0.85rem;
+    }
+    th, td {
+      border: 1px solid #e2e8f0;
+      padding: 0.4rem 0.5rem;
+      text-align: left;
+    }
+    th { background: #f1f5f9; }
+    tr:nth-child(even) { background: #f8fafc; }
+    
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: bold;
+    }
+    .badge-yes { background: #dcfce7; color: #166534; }
+    .badge-no { background: #fee2e2; color: #991b1b; }
+
+    .action-btns {
+      display: flex;
+      gap: 0.2rem;
+    }
+
+    .stats { font-size: 0.9rem; color: #64748b; margin-top: 1rem; }
+    textarea { width: 100%; height: 70px; border-radius: 8px; border: 1px solid #ccc; padding: 0.5rem; box-sizing: border-box; }
+    input[type="text"], input[type="number"], select { 
+      width: 100%; 
+      padding: 0.5rem; 
+      border-radius: 6px; 
+      border: 1px solid #ccc; 
+      box-sizing: border-box; 
+    }
+    .spinner {
+      display: inline-block;
+      width: 1rem;
+      height: 1rem;
+      border: 2px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .status-msg {
+      padding: 0.8rem;
+      margin-bottom: 1rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      background: #e0f2fe;
+      color: #0369a1;
+      border: 1px solid #bae6fd;
+    }
+    .app-footer {
+      margin-top: 3rem;
+      padding: 1rem 0;
+      border-top: 1px solid #e2e8f0;
+      font-size: 0.75rem;
+      color: #94a3b8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .footer-divider { color: #cbd5e1; }
+  </style>
+</head>
+
+<body>
+
+  <h1>Insight Dialogue & Meditation Vocab 🧘‍♂️🇬🇧</h1>
+  
+  <div id="loadingArea" class="status-msg">
+    ⏳ Lade Vokabeln aus <code>vokabeln-id.json</code>...
+  </div>
+
+  <div id="trainerArea" style="display:none;">
+    <div class="card-container" onclick="flipCard()">
+      <div class="card" id="flashcard">
+        <div class="card-face card-front">
+          <div class="lang-label" id="frontLang">Deutsch</div>
+          <div class="word-text" id="frontText">Wort</div>
+          <div class="hint">(Klicken zum Umdrehen)</div>
+        </div>
+        <div class="card-face card-back">
+          <div class="lang-label" id="backLang">Englisch</div>
+          <div class="word-text" id="backText">Word</div>
+          <button class="btn-speak" onclick="event.stopPropagation(); speakEnglish()">🔊 Anhören</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn-wrong" onclick="markAnswer(false)">❌ Falsch</button>
+      <button class="btn-correct" onclick="markAnswer(true)">✅ Richtig</button>
+    </div>
+
+    <div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;">
+      <button class="btn-sentence" onclick="generateSentence()"># Satz bilden #</button>
+      <button class="btn-ai" id="btnAiFetch" onclick="fetchAiSentenceForCurrent()">✨ KI-Satz generieren</button>
+      <button class="btn-add" onclick="toggleAddVocabBox()">➕ Neue Vokabel</button>
+      <button class="btn-import" onclick="toggleImportBox()">📥 KI-Prompt / Manuell</button>
+      <button class="btn-stats" onclick="toggleStatsView()">📊 Statistik & Liste</button>
+      <button class="btn-backup" onclick="toggleBackupBox()">💾 Sicherung</button>
+      <button class="btn-settings" onclick="toggleSettingsBox()">⚙️ API-Key</button>
+    </div>
+
+    <!-- BEREICH: API EINSTELLUNGEN -->
+    <div id="settingsBox">
+      <h3 style="margin-top:0;">KI-API Einstellungen</h3>
+      <p style="font-size:0.85rem; color:#475569;">
+        Hinterlege deinen API-Schlüssel, um englische Beispielsätze im Insight-Dialogue-/Meditations-Kontext automatisch zu generieren.
+      </p>
+      <div class="form-group">
+        <label for="apiProvider">Anbieter</label>
+        <select id="apiProvider" onchange="onProviderChange()">
+          <option value="openai">OpenAI (GPT-4o-mini)</option>
+          <option value="groq">Groq (Llama 3.3 / Kostenlos & Schnell)</option>
+          <option value="custom">Benutzerdefiniert (OpenAI-kompatibel)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="apiKeyInput">API Key</label>
+        <input type="password" id="apiKeyInput" placeholder="sk-...">
+      </div>
+      <div class="form-group" id="customUrlGroup" style="display:none;">
+        <label for="apiUrlInput">API Base URL</label>
+        <input type="text" id="apiUrlInput" placeholder="https://api.openai.com/v1">
+      </div>
+      <div class="form-group" id="customModelGroup" style="display:none;">
+        <label for="apiModelInput">Modell Name</label>
+        <input type="text" id="apiModelInput" placeholder="gpt-4o-mini">
+      </div>
+      <button class="btn-correct" onclick="saveSettings()" style="width:100%;">Einstellungen speichern</button>
+    </div>
+
+    <!-- BEREICH: SATZ ANZEIGEN -->
+    <div id="sentenceBox">
+      <h3 style="margin-top:0;">Beispielsatz:</h3>
+      <p id="sentenceEn" style="font-size: 1.1rem; font-weight: bold; color: #0f172a; margin-bottom: 0.3rem;"></p>
+      <p id="sentenceDe" style="color: #475569; margin-top: 0;"></p>
+      <button class="btn-speak" onclick="speakSentence()">🔊 Satz anhören</button>
+    </div>
+
+    <!-- BEREICH: VOKABEL HINZUFÜGEN / BEARBEITEN -->
+    <div id="addVocabBox">
+      <h3 style="margin-top:0;" id="addBoxTitle">Neue Vokabel hinzufügen</h3>
+      <form id="vocabForm" onsubmit="saveNewVocab(event)">
+        <div class="form-row">
+          <div class="form-group" style="flex:0.3;">
+            <label for="vocabId">ID</label>
+            <input type="number" id="vocabId" required>
+          </div>
+          <div class="form-group">
+            <label for="vocabEn">Englisch *</label>
+            <input type="text" id="vocabEn" placeholder="z. B. Relational Mindfulness" required>
+          </div>
+          <div class="form-group">
+            <label for="vocabDe">Deutsch *</label>
+            <input type="text" id="vocabDe" placeholder="z. B. Relationale Achtsamkeit" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="vocabExEn">Beispielsatz (Englisch, optional)</label>
+          <input type="text" id="vocabExEn" placeholder="z. B. Practice relational mindfulness in pairs.">
+        </div>
+        
+        <div class="form-group">
+          <label for="vocabExDe">Beispielsatz (Deutsch, optional)</label>
+          <input type="text" id="vocabExDe" placeholder="z. B. Übe relationale Achtsamkeit zu zweit.">
+        </div>
+
+        <div style="display:flex; gap:0.5rem; margin-top:0.5rem;">
+          <button type="submit" class="btn-correct" style="flex:1;">Speichern</button>
+          <button type="button" onclick="toggleAddVocabBox()" class="btn-wrong" style="flex:1; background:#64748b;">Abbrechen</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- BEREICH: BEISPIELSATZ IMPORTIEREN / MANUELL -->
+    <div id="importBox">
+      <h3 style="margin-top:0;">Manuelle KI-Satz-Generierung (ohne API-Key)</h3>
+      <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 0.3rem;">1. Kopiere diesen vorgefertigten Prompt für deine KI:</p>
+      <div class="prompt-preview" id="promptText"></div>
+      <button class="btn-copy" onclick="copyPrompt()">📋 Prompt in Zwischenablage kopieren</button>
+      
+      <p style="font-size: 0.85rem; color: #64748b; margin-top: 1rem; margin-bottom: 0.3rem;">2. Füge die Antwort der KI einfach hier ein:</p>
+      <textarea id="importJsonInput" placeholder="Antwort der KI hier reinkopieren..."></textarea>
+      <button class="btn-sentence" onclick="saveImportedSentence()" style="margin-top: 0.5rem;">Speichern & Anwenden</button>
+    </div>
+
+    <!-- BEREICH: STATISTIK & LISTE -->
+    <div id="statsView">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+        <h3 style="margin:0;">Vokabel-Übersicht & Statistik</h3>
+        <div>
+          <button class="btn-ai" id="btnBatchAi" onclick="fetchMissingSentencesBatch()" style="font-size:0.8rem; padding:0.4rem 0.8rem;">✨ Alle fehlenden Sätze via KI laden</button>
+          <button class="btn-reset" onclick="resetStats()">🗑️ Statistik zurücksetzen</button>
+        </div>
+      </div>
+      <div style="margin-top: 0.8rem;">Abgedeckte Beispielsätze: <span id="sentenceCoverageText">0 / 0</span></div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progressBar"></div>
+      </div>
+
+      <input type="text" id="tableSearch" onkeyup="renderTable()" placeholder="Vokabel suchen..." style="margin-bottom:0.5rem;">
+      
+      <div style="max-height: 250px; overflow-y: auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Englisch</th>
+              <th>Deutsch</th>
+              <th>Fehler</th>
+              <th>Satz?</th>
+              <th>Aktionen</th>
+            </tr>
+          </thead>
+          <tbody id="vocabTableBody">
+            <!-- Dynamischer Inhalt -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- BEREICH: EXPORT / IMPORT (SICHERUNG) -->
+    <div id="backupBox">
+      <h3 style="margin-top:0;">Daten sichern & übertragen</h3>
+      <p style="font-size:0.85rem; color:#475569;">
+        Lade deine Vokabelliste inklusive aller Beispielsätze und deiner Statistik herunter, um sie auf einem anderen Gerät einzuspielen.
+      </p>
+      
+      <div style="margin-bottom: 1rem;">
+        <strong>1. Exportieren (Speichern):</strong><br>
+        <button class="btn-sentence" onclick="exportData()" style="margin-top:0.3rem;">💾 Vokabeln & Statistik herunterladen</button>
+      </div>
+
+      <div>
+        <strong>2. Importieren (Wiederherstellen):</strong><br>
+        <input type="file" id="fileImporter" accept=".json" onchange="importData(event)" style="margin-top:0.3rem; font-size:0.85rem;">
+      </div>
+    </div>
+
+    <div class="stats" id="statsText">Gelernt: 0 | Fehler bei diesem Wort: 0</div>
+  </div>
+
+  <footer class="app-footer">
+    <span id="appVersionInfo">Insight Dialogue Vokabeltrainer</span>
+    <span class="footer-divider">•</span>
+    <span>Erstellt für Gregory Cramer & Meditation Vokabel-Training</span>
+  </footer>
+
+  <script>
+    let vocabList = [];
+    let currentItem = null;
+    let isFlipped = false;
+    let isFrontEnglish = false;
+    let wrongCountMap = {};
+    let totalLearned = 0;
+    let isEditing = false;
+
+    // API Einstellungen
+    let apiConfig = {
+      provider: 'openai',
+      key: '',
+      url: 'https://api.openai.com/v1',
+      model: 'gpt-4o-mini'
+    };
+
+    // App Initialisierung
+    window.addEventListener('DOMContentLoaded', () => {
+      loadStatsAndSettings();
+      fetchVocabularies();
+    });
+
+    // 1. Lokale Statistiken und Einstellungen aus localStorage laden
+    function loadStatsAndSettings() {
+      const savedStats = localStorage.getItem('myEnVocabStats');
+      if (savedStats) {
+        try {
+          const parsedStats = JSON.parse(savedStats);
+          wrongCountMap = parsedStats.wrongCountMap || {};
+          totalLearned = parsedStats.totalLearned || 0;
+        } catch(e) {}
+      }
+
+      const savedApi = localStorage.getItem('myEnVocabApiConfig');
+      if (savedApi) {
+        try {
+          apiConfig = { ...apiConfig, ...JSON.parse(savedApi) };
+        } catch(e) {}
+      }
+    }
+
+    // 2. Vokabeln aus externer Datei vokabeln-id.json nachladen
+    async function fetchVocabularies() {
+      const loadingEl = document.getElementById('loadingArea');
+      try {
+        const response = await fetch('vokabeln-id.json');
+        if (!response.ok) throw new Error(`HTTP-Fehler! Status: ${response.status}`);
+        
+        const fileVocab = await response.json();
+        
+        // Prüfen, ob lokal gespeicherte Sätze/Ergänzungen vorhanden sind
+        const customOverrides = JSON.parse(localStorage.getItem('myEnVocabOverrides') || '{}');
+
+        // Datei-Vokabeln mit eventuell lokalen Ergänzungen abgleichen
+        vocabList = fileVocab.map(item => {
+          if (customOverrides[item.id]) {
+            return { ...item, ...customOverrides[item.id] };
+          }
+          return item;
+        });
+
+        // Eventuell lokal komplett neu hinzugefügte Vokabeln anhängen
+        const extraVocab = JSON.parse(localStorage.getItem('myEnExtraVocab') || '[]');
+        if (extraVocab.length > 0) {
+          extraVocab.forEach(extra => {
+            if (!vocabList.some(v => v.id === extra.id)) {
+              vocabList.push(extra);
+            }
+          });
+        }
+
+        loadingEl.style.display = 'none';
+        document.getElementById('trainerArea').style.display = 'block';
+        document.getElementById('appVersionInfo').innerText = `Insight Dialogue Trainer v1.0 (${vocabList.length} Vokabeln)`;
+        initApiInputs();
+        nextCard();
+
+      } catch (err) {
+        console.error("Fehler beim Laden von vokabeln-id.json:", err);
+        loadingEl.style.background = "#fee2e2";
+        loadingEl.style.color = "#991b1b";
+        loadingEl.style.borderColor = "#fca5a5";
+        loadingEl.innerHTML = `⚠️ <b>Fehler beim Laden der Datei <code>vokabeln-id.json</code></b><br>
+          Stelle sicher, dass die Datei im selben Ordner wie die HTML-Datei liegt und über einen lokalen Server (z. B. Live Server) ausgeführt wird.`;
+      }
+    }
+
+    function saveToLocalStorage() {
+      localStorage.setItem('myEnVocabStats', JSON.stringify({
+        wrongCountMap: wrongCountMap,
+        totalLearned: totalLearned
+      }));
+
+      const overrides = {};
+      vocabList.forEach(item => {
+        if (item.ex_en || item.ex_de) {
+          overrides[item.id] = { ex_en: item.ex_en, ex_de: item.ex_de };
+        }
+      });
+      localStorage.setItem('myEnVocabOverrides', JSON.stringify(overrides));
+    }
+
+    function initApiInputs() {
+      document.getElementById('apiProvider').value = apiConfig.provider || 'openai';
+      document.getElementById('apiKeyInput').value = apiConfig.key || '';
+      document.getElementById('apiUrlInput').value = apiConfig.url || '';
+      document.getElementById('apiModelInput').value = apiConfig.model || '';
+      onProviderChange();
+    }
+
+    function onProviderChange() {
+      const provider = document.getElementById('apiProvider').value;
+      const customUrl = document.getElementById('customUrlGroup');
+      const customModel = document.getElementById('customModelGroup');
+
+      if (provider === 'custom') {
+        customUrl.style.display = 'block';
+        customModel.style.display = 'block';
+      } else {
+        customUrl.style.display = 'none';
+        customModel.style.display = 'none';
+      }
+    }
+
+    function saveSettings() {
+      const provider = document.getElementById('apiProvider').value;
+      const key = document.getElementById('apiKeyInput').value.trim();
+
+      apiConfig.provider = provider;
+      apiConfig.key = key;
+
+      if (provider === 'openai') {
+        apiConfig.url = 'https://api.openai.com/v1';
+        apiConfig.model = 'gpt-4o-mini';
+      } else if (provider === 'groq') {
+        apiConfig.url = 'https://api.groq.com/openai/v1';
+        apiConfig.model = 'llama-3.3-70b-versatile';
+      } else {
+        apiConfig.url = document.getElementById('apiUrlInput').value.trim();
+        apiConfig.model = document.getElementById('apiModelInput').value.trim();
+      }
+
+      localStorage.setItem('myEnVocabApiConfig', JSON.stringify(apiConfig));
+      alert("Einstellungen erfolgreich gespeichert!");
+      closeAllBoxes();
+    }
+
+    function nextCard() {
+      if (vocabList.length === 0) {
+        alert("Keine Vokabeln vorhanden!");
+        return;
+      }
+
+      isFlipped = false;
+      document.getElementById('flashcard').classList.remove('flipped');
+      closeAllBoxes();
+
+      const randomIndex = Math.floor(Math.random() * vocabList.length);
+      currentItem = vocabList[randomIndex];
+
+      isFrontEnglish = Math.random() < 0.5;
+
+      if (isFrontEnglish) {
+        document.getElementById('frontLang').innerText = "Englisch";
+        document.getElementById('frontText').innerText = currentItem.english;
+        document.getElementById('backLang').innerText = "Deutsch";
+        document.getElementById('backText').innerText = currentItem.german;
+      } else {
+        document.getElementById('frontLang').innerText = "Deutsch";
+        document.getElementById('frontText').innerText = currentItem.german;
+        document.getElementById('backLang').innerText = "Englisch";
+        document.getElementById('backText').innerText = currentItem.english;
+      }
+
+      updatePromptPreview();
+      updateStats();
+      if (document.getElementById('statsView').style.display === 'block') {
+        renderTable();
+      }
+    }
+
+    function updatePromptPreview() {
+      if (!currentItem) return;
+      const prompt = `Erstelle einen natürlichen englischen Beispielsatz im Kontext von Insight Dialogue / Meditation mit deutscher Übersetzung für ID ${currentItem.id} ("${currentItem.english}" = "${currentItem.german}"). Antworte AUSSCHLIESSLICH mit diesem JSON-Format:
+{
+  "id": ${currentItem.id},
+  "ex_en": "...",
+  "ex_de": "..."
+}`;
+      document.getElementById('promptText').innerText = prompt;
+    }
+
+    function copyPrompt() {
+      const text = document.getElementById('promptText').innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        alert("Prompt in die Zwischenablage kopiert!");
+      });
+    }
+
+    function copyPromptForId(id) {
+      const item = vocabList.find(v => v.id === id);
+      if (!item) return;
+      const prompt = `Erstelle einen natürlichen englischen Beispielsatz im Kontext von Insight Dialogue / Meditation mit deutscher Übersetzung für ID ${item.id} ("${item.english}" = "${item.german}"). Antworte AUSSCHLIESSLICH mit diesem JSON-Format:
+{
+  "id": ${item.id},
+  "ex_en": "...",
+  "ex_de": "..."
+}`;
+      navigator.clipboard.writeText(prompt).then(() => {
+        alert(`Prompt für ID ${id} (${item.english}) kopiert!`);
+      });
+    }
+
+    function flipCard() {
+      isFlipped = !isFlipped;
+      document.getElementById('flashcard').classList.toggle('flipped');
+      
+      if (isFlipped && !isFrontEnglish) {
+        speakEnglish();
+      } else if (!isFlipped && isFrontEnglish) {
+        speakEnglish();
+      }
+    }
+
+    function markAnswer(isCorrect) {
+      if (!currentItem) return;
+      const id = currentItem.id;
+      if (!wrongCountMap[id]) wrongCountMap[id] = 0;
+
+      if (isCorrect) {
+        totalLearned++;
+        saveToLocalStorage();
+        nextCard();
+      } else {
+        wrongCountMap[id]++;
+        saveToLocalStorage();
+        updateStats();
+        
+        if (wrongCountMap[id] >= 2) {
+          generateSentence();
+        } else {
+          nextCard();
+        }
+      }
+    }
+
+    function resetStats() {
+      if (confirm("Möchtest du die bisherigen Statistiken (Fehlerzähler und gelernte Wörter) wirklich auf 0 zurücksetzen?")) {
+        wrongCountMap = {};
+        totalLearned = 0;
+        saveToLocalStorage();
+        updateStats();
+        renderTable();
+        alert("Statistik wurde zurückgesetzt!");
+      }
+    }
+
+    function generateSentence() {
+      if (!currentItem) return;
+      const box = document.getElementById('sentenceBox');
+      const enEl = document.getElementById('sentenceEn');
+      const deEl = document.getElementById('sentenceDe');
+
+      let enSentence = currentItem.ex_en || `Here is an example with "${currentItem.english}".`;
+      let deSentence = currentItem.ex_de || `Hier ist ein Beispiel mit "${currentItem.german}".`;
+
+      enEl.innerText = enSentence;
+      deEl.innerText = deSentence;
+      closeAllBoxes();
+      box.style.display = 'block';
+
+      speakSentence();
+    }
+
+    // KI API INTEGRATION
+    async function requestAiSentence(item) {
+      if (!apiConfig.key) {
+        alert("Bitte hinterlege zuerst deinen API Key unter '⚙️ API-Key'!");
+        toggleSettingsBox();
+        return null;
+      }
+
+      const prompt = `Erstelle einen kurzen, natürlichen englischen Beispielsatz im Kontext von Insight Dialogue (Gregory Cramer), Meditation oder Vipassana mit deutscher Übersetzung für den Begriff "${item.english}" (${item.german}).
+Antworte AUSSCHLIESSLICH im folgenden JSON-Format ohne Markdown-Codeblöcke:
+{"ex_en": "...", "ex_de": "..."}`;
+
+      const endpoint = `${apiConfig.url.replace(/\/+$/, '')}/chat/completions`;
+
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiConfig.key}`
+        },
+        body: JSON.stringify({
+          model: apiConfig.model,
+          messages: [{ role: 'user', content: prompt }],
+          temperature: 0.7
+        })
+      });
+
+      if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(`API Fehler (${response.status}): ${errText}`);
+      }
+
+      const data = await response.json();
+      const content = data.choices[0].message.content.trim();
+      const jsonMatch = content.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) throw new Error("Ungültiges JSON-Format von der KI empfangen");
+
+      return JSON.parse(jsonMatch[0]);
+    }
+
+    async function fetchAiSentenceForCurrent() {
+      if (!currentItem) return;
+      const btn = document.getElementById('btnAiFetch');
+      const oldText = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = `<span class="spinner"></span> Generiere...`;
+
+      try {
+        const res = await requestAiSentence(currentItem);
+        if (res && res.ex_en && res.ex_de) {
+          currentItem.ex_en = res.ex_en;
+          currentItem.ex_de = res.ex_de;
+          saveToLocalStorage();
+          generateSentence();
+        }
+      } catch (e) {
+        alert("Fehler beim Abrufen des KI-Satzes: " + e.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = oldText;
+      }
+    }
+
+    async function fetchAiSentenceForId(id) {
+      const item = vocabList.find(v => v.id === id);
+      if (!item) return;
+
+      try {
+        const res = await requestAiSentence(item);
+        if (res && res.ex_en && res.ex_de) {
+          item.ex_en = res.ex_en;
+          item.ex_de = res.ex_de;
+          saveToLocalStorage();
+          renderTable();
+          alert(`Satz für "${item.english}" erfolgreich generiert!`);
+        }
+      } catch (e) {
+        alert("Fehler beim Abrufen des KI-Satzes: " + e.message);
+      }
+    }
+
+    async function fetchMissingSentencesBatch() {
+      const missing = vocabList.filter(v => !v.ex_en || v.ex_en.trim() === '');
+      if (missing.length === 0) {
+        alert("Alle Vokabeln besitzen bereits einen Beispielsatz!");
+        return;
+      }
+
+      if (!confirm(`Es wurden ${missing.length} Vokabeln ohne Beispielsatz gefunden. Möchtest du diese jetzt automatisch per KI generieren lassen?`)) {
+        return;
+      }
+
+      const btn = document.getElementById('btnBatchAi');
+      const oldText = btn.innerHTML;
+      btn.disabled = true;
+
+      let successCount = 0;
+      for (let i = 0; i < missing.length; i++) {
+        const item = missing[i];
+        btn.innerHTML = `<span class="spinner"></span> Generiere (${i+1}/${missing.length})...`;
+        try {
+          const res = await requestAiSentence(item);
+          if (res && res.ex_en && res.ex_de) {
+            item.ex_en = res.ex_en;
+            item.ex_de = res.ex_de;
+            successCount++;
+            saveToLocalStorage();
+            renderTable();
+          }
+        } catch (e) {
+          console.error(`Fehler bei ID ${item.id}:`, e);
+        }
+      }
+
+      btn.disabled = false;
+      btn.innerHTML = oldText;
+      alert(`Fertig! ${successCount} von ${missing.length} Beispielsätzen wurden erfolgreich ergänzt.`);
+    }
+
+    function closeAllBoxes() {
+      document.getElementById('sentenceBox').style.display = 'none';
+      document.getElementById('importBox').style.display = 'none';
+      document.getElementById('statsView').style.display = 'none';
+      document.getElementById('addVocabBox').style.display = 'none';
+      document.getElementById('backupBox').style.display = 'none';
+      document.getElementById('settingsBox').style.display = 'none';
+    }
+
+    function toggleSettingsBox() {
+      const settingsBox = document.getElementById('settingsBox');
+      const isOpening = settingsBox.style.display !== 'block';
+      closeAllBoxes();
+      if (isOpening) {
+        initApiInputs();
+        settingsBox.style.display = 'block';
+      }
+    }
+
+    function toggleImportBox() {
+      const importBox = document.getElementById('importBox');
+      const isOpening = importBox.style.display !== 'block';
+      closeAllBoxes();
+      if (isOpening) importBox.style.display = 'block';
+    }
+
+    function toggleStatsView() {
+      const statsView = document.getElementById('statsView');
+      const isOpening = statsView.style.display !== 'block';
+      closeAllBoxes();
+      if (isOpening) {
+        statsView.style.display = 'block';
+        renderTable();
+      }
+    }
+
+    function toggleAddVocabBox() {
+      const addBox = document.getElementById('addVocabBox');
+      const isOpening = addBox.style.display !== 'block';
+      closeAllBoxes();
+
+      if (isOpening) {
+        isEditing = false;
+        document.getElementById('addBoxTitle').innerText = "Neue Vokabel hinzufügen";
+        document.getElementById('vocabForm').reset();
+        
+        const maxId = vocabList.reduce((max, v) => v.id > max ? v.id : max, 0);
+        document.getElementById('vocabId').value = maxId + 1;
+        document.getElementById('vocabId').disabled = false;
+
+        addBox.style.display = 'block';
+      }
+    }
+
+    function toggleBackupBox() {
+      const backupBox = document.getElementById('backupBox');
+      const isOpening = backupBox.style.display !== 'block';
+      closeAllBoxes();
+      if (isOpening) backupBox.style.display = 'block';
+    }
+
+    function exportData() {
+      const backupData = {
+        vocabList: vocabList,
+        wrongCountMap: wrongCountMap,
+        totalLearned: totalLearned,
+        apiConfig: apiConfig
+      };
+
+      const jsonString = JSON.stringify(backupData, null, 2);
+      const blob = new Blob([jsonString], { type: 'application/json;charset=utf-8;' });
+      const filename = 'insight_dialogue_vokabeln_sicherung.json';
+
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      
+      link.href = url;
+      link.setAttribute('download', filename);
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      
+      link.click();
+      
+      setTimeout(() => {
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      }, 200);
+    }
+
+    function importData(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const importedData = JSON.parse(e.target.result);
+
+          if (Array.isArray(importedData)) {
+            vocabList = importedData;
+          } else if (importedData.vocabList && Array.isArray(importedData.vocabList)) {
+            vocabList = importedData.vocabList;
+            wrongCountMap = importedData.wrongCountMap || {};
+            totalLearned = importedData.totalLearned || 0;
+            if (importedData.apiConfig) apiConfig = importedData.apiConfig;
+          } else {
+            throw new Error("Ungültiges Format");
+          }
+
+          saveToLocalStorage();
+          alert(`Erfolgreich ${vocabList.length} Vokabeln und Statistiken importiert!`);
+          closeAllBoxes();
+          nextCard();
+        } catch (err) {
+          alert("Fehler beim Lesen der JSON-Datei.");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function editVocab(id) {
+      const item = vocabList.find(v => v.id === id);
+      if (!item) return;
+
+      isEditing = true;
+      closeAllBoxes();
+
+      document.getElementById('addBoxTitle').innerText = `Vokabel ID ${id} bearbeiten`;
+      document.getElementById('vocabId').value = item.id;
+      document.getElementById('vocabId').disabled = true;
+      document.getElementById('vocabEn').value = item.english;
+      document.getElementById('vocabDe').value = item.german;
+      document.getElementById('vocabExEn').value = item.ex_en || '';
+      document.getElementById('vocabExDe').value = item.ex_de || '';
+
+      document.getElementById('addVocabBox').style.display = 'block';
+    }
+
+    function saveNewVocab(e) {
+      e.preventDefault();
+      
+      const id = parseInt(document.getElementById('vocabId').value);
+      const english = document.getElementById('vocabEn').value.trim();
+      const german = document.getElementById('vocabDe').value.trim();
+      const ex_en = document.getElementById('vocabExEn').value.trim();
+      const ex_de = document.getElementById('vocabExDe').value.trim();
+
+      if (isEditing) {
+        const item = vocabList.find(v => v.id === id);
+        if (item) {
+          item.english = english;
+          item.german = german;
+          item.ex_en = ex_en;
+          item.ex_de = ex_de;
+        }
+      } else {
+        if (vocabList.some(v => v.id === id)) {
+          alert(`Die ID ${id} existiert bereits! Bitte wähle eine andere ID.`);
+          return;
+        }
+
+        const newEntry = { id, english, german };
+        if (ex_en) newEntry.ex_en = ex_en;
+        if (ex_de) newEntry.ex_de = ex_de;
+
+        vocabList.push(newEntry);
+        vocabList.sort((a, b) => a.id - b.id);
+
+        const extraVocab = JSON.parse(localStorage.getItem('myEnExtraVocab') || '[]');
+        extraVocab.push(newEntry);
+        localStorage.setItem('myEnExtraVocab', JSON.stringify(extraVocab));
+      }
+
+      saveToLocalStorage();
+      alert(isEditing ? "Vokabel aktualisiert!" : "Vokabel gespeichert!");
+      closeAllBoxes();
+
+      if (currentItem && currentItem.id === id) {
+        nextCard();
+      }
+    }
+
+    function deleteVocab(id) {
+      const item = vocabList.find(v => v.id === id);
+      if (!item) return;
+
+      if (confirm(`Möchtest du "${item.english}" (${item.german}) wirklich löschen?`)) {
+        vocabList = vocabList.filter(v => v.id !== id);
+        delete wrongCountMap[id];
+        saveToLocalStorage();
+        renderTable();
+
+        if (currentItem && currentItem.id === id) {
+          nextCard();
+        }
+      }
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('vocabTableBody');
+      const query = document.getElementById('tableSearch').value.toLowerCase();
+      tbody.innerHTML = '';
+
+      let withSentenceCount = 0;
+
+      vocabList.forEach(item => {
+        const hasSentence = item.ex_en && item.ex_en.trim() !== '';
+        if (hasSentence) withSentenceCount++;
+
+        if (query && !item.english.toLowerCase().includes(query) && !item.german.toLowerCase().includes(query) && item.id.toString() !== query) {
+          return;
+        }
+
+        const tr = document.createElement('tr');
+        const wrong = wrongCountMap[item.id] || 0;
+
+        tr.innerHTML = `
+          <td>${item.id}</td>
+          <td><b>${item.english}</b></td>
+          <td>${item.german}</td>
+          <td>${wrong > 0 ? `<span style="color:red;font-weight:bold;">${wrong}</span>` : '0'}</td>
+          <td>
+            ${hasSentence 
+              ? `<span class="badge badge-yes" title="${item.ex_en}">Ja</span>` 
+              : `<span class="badge badge-no">Nein</span>`}
+          </td>
+          <td>
+            <div class="action-btns">
+              <button class="btn-ai" title="Satz via KI laden" style="padding:0.3rem 0.5rem; margin:0;" onclick="fetchAiSentenceForId(${item.id})">✨</button>
+              <button class="btn-copy" title="Prompt kopieren" onclick="copyPromptForId(${item.id})">📋</button>
+              <button class="btn-edit" title="Bearbeiten" onclick="editVocab(${item.id})">✏️</button>
+              <button class="btn-delete" title="Löschen" onclick="deleteVocab(${item.id})">🗑️</button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      const pct = Math.round((withSentenceCount / vocabList.length) * 100) || 0;
+      document.getElementById('sentenceCoverageText').innerText = `${withSentenceCount} von ${vocabList.length} (${pct}%)`;
+      document.getElementById('progressBar').style.width = `${pct}%`;
+    }
+
+    function saveImportedSentence() {
+      const rawText = document.getElementById('importJsonInput').value;
+      try {
+        const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+        if (!jsonMatch) throw new Error("Kein JSON gefunden");
+
+        const data = JSON.parse(jsonMatch[0]);
+        const targetId = data.id || (currentItem ? currentItem.id : null);
+
+        let targetVocab = vocabList.find(v => v.id === targetId);
+        if (targetVocab) {
+          if (data.ex_en) targetVocab.ex_en = data.ex_en;
+          if (data.ex_de) targetVocab.ex_de = data.ex_de;
+
+          saveToLocalStorage();
+
+          alert(`Beispielsatz für ID ${targetId} (${targetVocab.english}) gespeichert!`);
+          document.getElementById('importJsonInput').value = '';
+          document.getElementById('importBox').style.display = 'none';
+
+          if (currentItem && targetId === currentItem.id) {
+            generateSentence();
+          }
+        } else {
+          alert(`ID ${targetId} wurde nicht gefunden.`);
+        }
+      } catch (e) {
+        alert("Fehler beim Verarbeiten. Stelle sicher, dass die KI eine gültige Antwort generiert hat.");
+      }
+    }
+
+    function speakEnglish() {
+      if (currentItem) speakText(currentItem.english);
+    }
+
+    function speakSentence() {
+      const text = document.getElementById('sentenceEn').innerText;
+      speakText(text);
+    }
+
+    function speakText(text) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.9;
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    function updateStats() {
+      const id = currentItem ? currentItem.id : 0;
+      const currentWrong = wrongCountMap[id] || 0;
+      document.getElementById('statsText').innerText = `Abgefragt: ${totalLearned} | Fehler bei dieser Vokabel: ${currentWrong}`;
+    }
+  </script>
+</body>
+</html>
